@@ -42,6 +42,8 @@ spec:
               value: '2222'
             - name: MASTER_ADDR
               value: localhost
+            - name: WORLD_SIZE
+              value: 2
             - name: RANK
               value: '0'
       restartPolicy: Never
@@ -87,6 +89,8 @@ spec:
               value: '2222'
             - name: MASTER_ADDR
               value: pytorch-operator-master
+            - name: WORLD_SIZE
+              value: 2
             - name: RANK
               value: '1'
       restartPolicy: Never
