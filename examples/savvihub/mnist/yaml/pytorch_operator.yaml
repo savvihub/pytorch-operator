@@ -90,7 +90,7 @@ spec:
             - name: MASTER_ADDR
               value: pytorch-operator-master
             - name: WORLD_SIZE
-              value: '2'
+              value: '3'
             - name: RANK
               value: '1'
       restartPolicy: Never
