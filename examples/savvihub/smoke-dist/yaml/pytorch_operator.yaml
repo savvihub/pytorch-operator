@@ -60,13 +60,8 @@ kind: Job
 metadata:
   name: pytorch-operator-worker
   namespace: floyd
-  labels:
-    app: worker
 spec:
   template:
-    metadata:
-      labels:
-        app: worker
     spec:
       containers:
         - name: pytorch-operator
@@ -110,20 +105,6 @@ metadata:
 spec:
   selector:
     app: master
-  ports:
-    - protocol: TCP
-      port: 2222
-      targetPort: 2222
-  type: NodePort
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: pytorch-operator-worker
-  namespace: floyd
-spec:
-  selector:
-    app: worker
   ports:
     - protocol: TCP
       port: 2222
