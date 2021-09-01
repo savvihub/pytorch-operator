@@ -43,7 +43,7 @@ spec:
             - name: MASTER_ADDR
               value: localhost
             - name: WORLD_SIZE
-              value: '2'
+              value: '3'
             - name: RANK
               value: '0'
       restartPolicy: Never
@@ -58,7 +58,7 @@ spec:
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: pytorch-operator-worker
+  name: pytorch-operator-worker1
   namespace: floyd
   labels:
     app: worker
@@ -102,6 +102,53 @@ spec:
             defaultMode: 0700
             name: pytorch-operator-entrypoint
 ---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: pytorch-operator-worker2
+  namespace: floyd
+  labels:
+    app: worker
+spec:
+  template:
+    metadata:
+      labels:
+        app: worker
+    spec:
+      containers:
+        - name: pytorch-operator
+          image: savvihub/kernels:py37-cuda11.0.full-gpu
+          resources:
+            limits:
+              memory: 1Gi
+          command:
+            - /bin/entrypoint.sh
+          volumeMounts:
+            - name: configmap-volume
+              mountPath: /bin/entrypoint.sh
+              readOnly: true
+              subPath: entrypoint.sh
+          ports:
+            - containerPort: 2222
+              protocol: TCP
+          env:
+            - name: MASTER_PORT
+              value: '2222'
+            - name: MASTER_ADDR
+              value: pytorch-operator-master
+            - name: WORLD_SIZE
+              value: '3'
+            - name: RANK
+              value: '2'
+      restartPolicy: Never
+      nodeSelector:
+        nvidia.com/gpu.product: GeForce-RTX-3080
+      volumes:
+        - name: configmap-volume
+          configMap:
+            defaultMode: 0700
+            name: pytorch-operator-entrypoint
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -110,20 +157,6 @@ metadata:
 spec:
   selector:
     app: master
-  ports:
-    - protocol: TCP
-      port: 2222
-      targetPort: 2222
-  type: NodePort
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: pytorch-operator-worker
-  namespace: floyd
-spec:
-  selector:
-    app: worker
   ports:
     - protocol: TCP
       port: 2222
