@@ -115,7 +115,7 @@ def main():
         print('Using distributed PyTorch with {} backend'.format(args.backend))
         dist.init_process_group(backend=args.backend)
 
-    kwargs = {'num_workers': 1, 'pin_memory': True} if use_cuda else {}
+    kwargs = {'num_workers': 2, 'pin_memory': True} if use_cuda else {}
     train_loader = torch.utils.data.DataLoader(
         datasets.FashionMNIST('../data', train=True, download=True,
                        transform=transforms.Compose([
@@ -145,6 +145,7 @@ def main():
 
     if (args.save_model):
         torch.save(model.state_dict(),"mnist_cnn.pt")
-        
+
+
 if __name__ == '__main__':
     main()
