@@ -114,6 +114,7 @@ def main():
     if should_distribute():
         print('Using distributed PyTorch with {} backend'.format(args.backend))
         dist.init_process_group(backend=args.backend)
+        print('init_process_group finished')
 
     kwargs = {'num_workers': 2, 'pin_memory': True} if use_cuda else {}
     train_loader = torch.utils.data.DataLoader(
@@ -123,12 +124,14 @@ def main():
                            transforms.Normalize((0.1307,), (0.3081,))
                        ])),
         batch_size=args.batch_size, shuffle=True, **kwargs)
+    print('train_loader finished')
     test_loader = torch.utils.data.DataLoader(
         datasets.FashionMNIST('../data', train=False, transform=transforms.Compose([
                            transforms.ToTensor(),
                            transforms.Normalize((0.1307,), (0.3081,))
                        ])),
         batch_size=args.test_batch_size, shuffle=False, **kwargs)
+    print('test_loader finished')
 
     model = Net().to(device)
 
